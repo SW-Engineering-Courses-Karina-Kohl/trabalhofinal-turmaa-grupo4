@@ -4,6 +4,7 @@
     <artifactId>exemplo-servlet</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
+
     <dependencies>
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -11,7 +12,15 @@
             <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
     <build>
         <finalName>ROOT</finalName>
         <plugins>
@@ -20,9 +29,12 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
         </plugins>
     </build>
 </project>
-
-
-
