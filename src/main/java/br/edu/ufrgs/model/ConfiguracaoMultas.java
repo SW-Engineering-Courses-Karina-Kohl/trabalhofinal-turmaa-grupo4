@@ -2,7 +2,7 @@ package br.edu.ufrgs.model;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class ConfiguracaoMultas {
     public void carregar(String caminhoArquivo) {
         try {
             // le todas as linhas do arquivo
-            List<String> linhas = Files.readAllLines(Path.of(caminhoArquivo));
+            List<String> linhas = Files.readAllLines(Paths.get(caminhoArquivo));
 
             // percorre o arquivo a partir da segunda linha
             // comeca em 1 para ignorar o cabecalho
