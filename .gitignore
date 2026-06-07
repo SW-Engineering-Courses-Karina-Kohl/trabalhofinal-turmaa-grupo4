@@ -25,3 +25,8 @@ replay_pid*
 
 # target
 target/
+docs/
+*.war
+.antigravityignore
+tela_stitch.html
+*_teste.csv

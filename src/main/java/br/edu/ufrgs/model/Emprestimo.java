@@ -11,6 +11,7 @@ public class Emprestimo {
     private LocalDate dataPrevista;
     private LocalDate dataDevolucao;
     private long diasAtraso;
+    private double valorMulta;
     
     // método construtor
     public Emprestimo(int id,String titulo, String categoria, LocalDate dataPrevista, LocalDate dataDevolucao) {
@@ -20,6 +21,7 @@ public class Emprestimo {
         this.dataPrevista = dataPrevista;
         this.dataDevolucao = dataDevolucao;
         this.diasAtraso = calcularDiasAtraso();
+        this.valorMulta = 0.0;
     }
 
     private long calcularDiasAtraso() {
@@ -31,6 +33,14 @@ public class Emprestimo {
     }
 
     // métodos getters
+    public int getId() {
+        return id;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
     public LocalDate getDataPrevista() {
         return dataPrevista;
     }
@@ -45,5 +55,13 @@ public class Emprestimo {
 
     public String getCategoria() {
         return categoria;
+    }
+
+    public double getValorMulta() {
+        return valorMulta;
+    }
+
+    public void setValorMulta(double valorMulta) {
+        this.valorMulta = valorMulta;
     }
 }
