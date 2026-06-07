@@ -142,7 +142,7 @@ public class ServletMedia extends HttpServlet {
         try (java.io.PrintWriter writer = response.getWriter()) {
             writer.println("id,titulo,categoria,data_esperada,data_real,valor_multa");
             for (Emprestimo e : emprestimos) {
-                writer.println(String.format("%d,%s,%s,%s,%s,%.2f",
+                writer.println(String.format("%02d,%s,%s,%s,%s,%.2f",
                     e.getId(),
                     e.getTitulo().contains(",") ? "\"" + e.getTitulo() + "\"" : e.getTitulo(),
                     e.getCategoria(),
