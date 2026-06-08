@@ -18,7 +18,6 @@ public class ConfiguracaoMultas {
         this.valoresBase = new HashMap<>();
     }
 
-    // metodo que le o arquivo csv de configuracao e preenche o mapa de multas
     public void carregar(String caminhoArquivo) {
         try {
             // le todas as linhas do arquivo
@@ -62,7 +61,6 @@ public class ConfiguracaoMultas {
         }
     }
 
-    // metodo que retorna o valor base da multa para uma categoria
     public double getValorBase(String categoria) {
         // verifica se a categoria existe no mapa
         if (!valoresBase.containsKey(categoria)) {

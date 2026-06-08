@@ -1,13 +1,17 @@
-package br.edu.ufrgs.model;
-import static org.mockito.Mockito.*;
+package br.edu.ufrgs.service;
 
+import br.edu.ufrgs.model.ConfiguracaoMultas;
+import br.edu.ufrgs.model.Emprestimo;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class CalculadoraMultasTest {
+
     @Test
     void deveCalcularMultaCorretamente() {
-        // definicao de uma configuracao de multas e emprestimo mockados
         ConfiguracaoMultas config = mock(ConfiguracaoMultas.class);
         when(config.getValorBase("Academico")).thenReturn(2.5);
 
@@ -15,10 +19,9 @@ public class CalculadoraMultasTest {
         when(emprestimo.getCategoria()).thenReturn("Academico");
         when(emprestimo.getDiasAtraso()).thenReturn(4L);
 
-        // instancia a calculadora de multas com a configuracao mockada
         CalculadoraMultas calculadora = new CalculadoraMultas(config);
 
         double resultado = calculadora.processarMulta(emprestimo);
         assertEquals(10.0, resultado);
-    }  
+    }
 }

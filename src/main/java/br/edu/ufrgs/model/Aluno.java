@@ -1,6 +1,6 @@
 package br.edu.ufrgs.model;
 
-public class Aluno {
+public class Aluno implements AvaliavelAluno {
     private String nome;
     private double nota;
 
@@ -9,10 +9,12 @@ public class Aluno {
         this.nota = nota;
     }
 
+    @Override
     public String verificarSituacao() {
         return (this.nota >= 6.0) ? "Aprovado(a)" : "Reprovado(a)";
     }
 
+    @Override
     public String getMensagemFinal() {
         return "O aluno " + nome + " está " + verificarSituacao() + " com nota " + nota;
     }

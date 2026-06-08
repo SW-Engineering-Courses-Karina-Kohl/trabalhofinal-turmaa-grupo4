@@ -32,7 +32,6 @@ public class Emprestimo {
         }
     }
 
-    // métodos getters
     public int getId() {
         return id;
     }

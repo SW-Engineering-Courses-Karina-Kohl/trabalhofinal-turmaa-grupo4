@@ -1,0 +1,10 @@
+# Usa WAR gerado localmente (mvn package). Não precisa baixar imagem Maven.
+ARG TOMCAT_IMAGE=mirror.gcr.io/library/tomcat:10.1-jdk17-temurin
+
+FROM ${TOMCAT_IMAGE}
+WORKDIR /usr/local/tomcat/webapps/
+RUN rm -rf /usr/local/tomcat/webapps/*
+COPY target/ROOT.war ./ROOT.war
+
+EXPOSE 8080
+CMD ["catalina.sh", "run"]

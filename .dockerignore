@@ -1,0 +1,8 @@
+target/
+.git/
+.gitignore
+.vscode/
+dados_teste/
+*.md
+docker-compose*.yml
+Dockerfile.local
