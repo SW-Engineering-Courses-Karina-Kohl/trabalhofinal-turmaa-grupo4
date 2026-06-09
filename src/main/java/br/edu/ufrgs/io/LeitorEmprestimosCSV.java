@@ -1,7 +1,5 @@
 package br.edu.ufrgs.io;
 
-import br.edu.ufrgs.model.Emprestimo;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,8 +8,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.ufrgs.model.Emprestimo;
+
 // classe responsavel por ler o arquivo csv de emprestimos
-public class LeitorEmprestimosCSV {
+public class LeitorEmprestimosCSV implements LeitorEmprestimos {
 
     // le o arquivo csv e retorna uma lista de emprestimos
     public List<Emprestimo> ler(String caminhoArquivo) {

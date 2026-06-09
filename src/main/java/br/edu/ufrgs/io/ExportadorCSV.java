@@ -1,7 +1,5 @@
 package br.edu.ufrgs.io;
 
-import br.edu.ufrgs.model.Emprestimo;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +8,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 
-public class ExportadorCSV {
+import br.edu.ufrgs.model.Emprestimo;
+
+public class ExportadorCSV implements ExportadorResultados {
 
     // exporta os emprestimos processados para um arquivo csv
     public void exportar(String caminhoArquivo, List<Emprestimo> emprestimos) {

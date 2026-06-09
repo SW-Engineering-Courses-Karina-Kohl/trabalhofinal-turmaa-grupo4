@@ -4,15 +4,17 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import br.edu.ufrgs.io.ExportadorCSV;
+import br.edu.ufrgs.io.ExportadorResultados;
+import br.edu.ufrgs.io.LeitorEmprestimos;
 import br.edu.ufrgs.io.LeitorEmprestimosCSV;
 import br.edu.ufrgs.model.ConfiguracaoMultas;
 import br.edu.ufrgs.model.Emprestimo;
 
 public class ProcessadorBiblioteca {
-    private final LeitorEmprestimosCSV leitor;
+    private final LeitorEmprestimos leitor;
     private final ConfiguracaoMultas config;
     private CalculadoraMultas calculadora;
-    private final ExportadorCSV exportador;
+    private final ExportadorResultados exportador;
 
     public ProcessadorBiblioteca() {
         this.leitor = new LeitorEmprestimosCSV();
