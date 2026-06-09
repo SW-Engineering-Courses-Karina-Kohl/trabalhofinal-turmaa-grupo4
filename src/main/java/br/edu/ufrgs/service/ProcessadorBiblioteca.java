@@ -1,11 +1,11 @@
 package br.edu.ufrgs.service;
 
+import java.util.List;
+
 import br.edu.ufrgs.io.ExportadorCSV;
 import br.edu.ufrgs.io.LeitorEmprestimosCSV;
 import br.edu.ufrgs.model.ConfiguracaoMultas;
 import br.edu.ufrgs.model.Emprestimo;
-
-import java.util.List;
 
 public class ProcessadorBiblioteca {
     private final LeitorEmprestimosCSV leitor;
@@ -36,6 +36,6 @@ public class ProcessadorBiblioteca {
     }
 
     public void exportar(String caminhoSaida, List<Emprestimo> emprestimos) {
-        exportador.exportar(caminhoSaida, emprestimos, calculadora);
+        exportador.exportar(caminhoSaida, emprestimos);
     }
 }
