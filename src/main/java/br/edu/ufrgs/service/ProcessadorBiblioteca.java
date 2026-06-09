@@ -1,5 +1,6 @@
 package br.edu.ufrgs.service;
 
+import java.io.PrintWriter;
 import java.util.List;
 
 import br.edu.ufrgs.io.ExportadorCSV;
@@ -24,7 +25,13 @@ public class ProcessadorBiblioteca {
         this.calculadora = new CalculadoraMultas(config);
     }
 
+    // processa o arquivo de emprestimos usando a configuracao de multas carregada
     public List<Emprestimo> processar(String caminhoEmprestimos) {
+        // impede o processamento sem configuracao carregada
+        if (calculadora == null) {
+            throw new IllegalStateException("configuracao de multas nao carregada");
+        }
+
         List<Emprestimo> emprestimos = leitor.ler(caminhoEmprestimos);
 
         for (Emprestimo emprestimo : emprestimos) {
@@ -35,7 +42,35 @@ public class ProcessadorBiblioteca {
         return emprestimos;
     }
 
+    // conta quantos emprestimos tiveram atraso
+    public int contarAtrasados(List<Emprestimo> emprestimos) {
+        int totalAtrasados = 0;
+
+        for (Emprestimo emprestimo : emprestimos) {
+            if (emprestimo.getDiasAtraso() > 0) {
+                totalAtrasados++;
+            }
+        }
+
+        return totalAtrasados;
+    }
+
+    // soma o valor total das multas ja calculadas
+    public double somarMultas(List<Emprestimo> emprestimos) {
+        double totalMultas = 0.0;
+
+        for (Emprestimo emprestimo : emprestimos) {
+            totalMultas += emprestimo.getValorMulta();
+        }
+
+        return totalMultas;
+    }
+
     public void exportar(String caminhoSaida, List<Emprestimo> emprestimos) {
         exportador.exportar(caminhoSaida, emprestimos);
+    }
+
+    public void exportarParaResposta(PrintWriter writer, List<Emprestimo> emprestimos) {
+        exportador.exportarParaResposta(writer, emprestimos);
     }
 }
