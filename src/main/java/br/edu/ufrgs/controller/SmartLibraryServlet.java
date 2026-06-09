@@ -1,6 +1,5 @@
 package br.edu.ufrgs.controller;
 
-import br.edu.ufrgs.io.ExportadorCSV;
 import br.edu.ufrgs.model.Emprestimo;
 import br.edu.ufrgs.service.ProcessadorBiblioteca;
 import jakarta.servlet.ServletException;
@@ -19,6 +18,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+// servlet principal da aplicacao
+// recebe os arquivos enviados, chama o processamento e encaminha o resultado para a jsp
 @WebServlet(urlPatterns = {"/processa", "/exportar"})
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2,
@@ -32,6 +33,8 @@ public class SmartLibraryServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String path = request.getServletPath();
+
+        // se a requisicao for de exportacao, chama direto o metodo de exportar csv
         if ("/exportar".equals(path)) {
             exportarCsv(request, response);
             return;
@@ -41,14 +44,17 @@ public class SmartLibraryServlet extends HttpServlet {
             Part fileEmprestimos = request.getPart("emprestimos");
             Part fileConfig = request.getPart("config");
 
+            // o arquivo de configuracao e obrigatorio para calcular as multas
             if (fileConfig == null || fileConfig.getSize() == 0) {
                 throw new IllegalArgumentException(
                     "O arquivo de configuração de taxas (config_biblioteca.csv) é obrigatório."
                 );
             }
 
+            // cria o processador responsavel por coordenar a leitura e o calculo
             ProcessadorBiblioteca processador = new ProcessadorBiblioteca();
 
+            // salva temporariamente o csv de configuracao e carrega as multas
             Path tempConfig = salvarArquivoTemporario(fileConfig, "config-");
             try {
                 processador.carregarConfiguracao(tempConfig.toAbsolutePath().toString());
@@ -56,6 +62,7 @@ public class SmartLibraryServlet extends HttpServlet {
                 Files.deleteIfExists(tempConfig);
             }
 
+            // processa os emprestimos enviados no csv principal
             List<Emprestimo> emprestimos = new ArrayList<>();
             if (fileEmprestimos != null && fileEmprestimos.getSize() > 0) {
                 Path tempEmprestimos = salvarArquivoTemporario(fileEmprestimos, "emprestimos-");
@@ -66,22 +73,18 @@ public class SmartLibraryServlet extends HttpServlet {
                 }
             }
 
-            int totalAtrasados = 0;
-            double totalMultas = 0.0;
+            // pega os totais a partir do processador
+            int totalAtrasados = processador.contarAtrasados(emprestimos);
+            double totalMultas = processador.somarMultas(emprestimos);
 
-            for (Emprestimo emprestimo : emprestimos) {
-                if (emprestimo.getDiasAtraso() > 0) {
-                    totalAtrasados++;
-                }
-                totalMultas += emprestimo.getValorMulta();
-            }
-
+            // envia os dados processados para a jsp
             request.setAttribute("emprestimos", emprestimos);
             request.setAttribute("totalProcessados", emprestimos.size());
             request.setAttribute("totalAtrasados", totalAtrasados);
             request.setAttribute("totalMultas", totalMultas);
             request.setAttribute("processado", true);
 
+            // guarda os emprestimos processados na sessao para permitir a exportacao depois
             request.getSession().setAttribute("emprestimosProcessados", emprestimos);
 
         } catch (Exception e) {
@@ -96,6 +99,8 @@ public class SmartLibraryServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String path = request.getServletPath();
+
+        // se a requisicao for de exportacao, gera o csv; se nao, volta para a pagina inicial
         if ("/exportar".equals(path)) {
             exportarCsv(request, response);
         } else {
@@ -107,6 +112,7 @@ public class SmartLibraryServlet extends HttpServlet {
     private void exportarCsv(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
+        // recupera da sessao os emprestimos ja processados
         List<Emprestimo> emprestimos =
             (List<Emprestimo>) request.getSession().getAttribute("emprestimosProcessados");
 
@@ -115,14 +121,17 @@ public class SmartLibraryServlet extends HttpServlet {
             return;
         }
 
+        // configura a resposta http como download de csv
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"multas_processadas.csv\"");
         response.setCharacterEncoding("UTF-8");
 
-        ExportadorCSV exportador = new ExportadorCSV();
-        exportador.exportarParaResposta(response.getWriter(), emprestimos);
+        // usa o processador para fazer a exportacao
+        ProcessadorBiblioteca processador = new ProcessadorBiblioteca();
+        processador.exportarParaResposta(response.getWriter(), emprestimos);
     }
 
+    // salva um arquivo enviado via multipart em um arquivo temporario
     private Path salvarArquivoTemporario(Part arquivo, String prefixo) throws IOException {
         Path temp = Files.createTempFile(prefixo, ".csv");
         try (InputStream is = arquivo.getInputStream()) {
