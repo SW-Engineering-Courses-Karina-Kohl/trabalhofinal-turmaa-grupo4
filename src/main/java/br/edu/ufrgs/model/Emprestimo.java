@@ -1,4 +1,6 @@
 package br.edu.ufrgs.model;
+
+import br.edu.ufrgs.service.CalculadoraMultas;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -60,7 +62,7 @@ public class Emprestimo {
         return valorMulta;
     }
 
-    public void setValorMulta(double valorMulta) {
-        this.valorMulta = valorMulta;
+    public void setValorMulta(CalculadoraMultas calculadora) {
+        this.valorMulta = calculadora.processarMulta(this);
     }
 }

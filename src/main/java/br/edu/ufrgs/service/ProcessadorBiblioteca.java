@@ -37,8 +37,7 @@ public class ProcessadorBiblioteca {
         List<Emprestimo> emprestimos = leitor.ler(caminhoEmprestimos);
 
         for (Emprestimo emprestimo : emprestimos) {
-            double multa = calculadora.processarMulta(emprestimo);
-            emprestimo.setValorMulta(multa);
+            emprestimo.setValorMulta(calculadora);
         }
 
         return emprestimos;
