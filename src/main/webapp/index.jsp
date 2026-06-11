@@ -305,43 +305,9 @@
                                 } 
                             } else { 
                         %>
-                            <!-- Exemplo demonstrativo antes do processamento (Mock do Stitch em PT-BR) -->
-                            <tr class="border-b border-surface-border hover:bg-surface-container-lowest transition-colors">
-                                <td class="py-md px-md">001</td>
-                                <td class="py-md px-md font-medium text-primary">Java Clean Code</td>
-                                <td class="py-md px-md">
-                                    <span class="inline-flex items-center px-2 py-1 rounded bg-secondary-container text-category-academic text-[10px] uppercase font-bold tracking-wider">Acadêmico</span>
-                                </td>
-                                <td class="py-md px-md text-secondary">2026-03-20</td>
-                                <td class="py-md px-md text-secondary">2026-03-25</td>
-                                <td class="py-md px-md text-right text-status-warning font-semibold">5</td>
-                                <td class="py-md px-md text-right text-error font-semibold">R$ 10,00</td>
-                            </tr>
-                            <tr class="border-b border-surface-border hover:bg-surface-container-lowest transition-colors bg-surface-background">
-                                <td class="py-md px-md">002</td>
-                                <td class="py-md px-md font-medium text-primary">Dom Casmurro</td>
-                                <td class="py-md px-md">
-                                    <span class="inline-flex items-center px-2 py-1 rounded bg-surface-container text-secondary text-[10px] uppercase font-bold tracking-wider">Comum</span>
-                                </td>
-                                <td class="py-md px-md text-secondary">2026-03-15</td>
-                                <td class="py-md px-md text-secondary">2026-03-15</td>
-                                <td class="py-md px-md text-right text-status-success font-semibold">0</td>
-                                <td class="py-md px-md text-right text-status-success font-semibold">R$ 0,00</td>
-                            </tr>
-                            <tr class="border-b border-surface-border hover:bg-surface-container-lowest transition-colors">
-                                <td class="py-md px-md">003</td>
-                                <td class="py-md px-md font-medium text-primary">Manuscrito Original</td>
-                                <td class="py-md px-md">
-                                    <span class="inline-flex items-center px-2 py-1 rounded bg-surface-variant text-category-rare text-[10px] uppercase font-bold tracking-wider">Raro</span>
-                                </td>
-                                <td class="py-md px-md text-secondary">2026-03-10</td>
-                                <td class="py-md px-md text-secondary">2026-03-12</td>
-                                <td class="py-md px-md text-right text-status-warning font-semibold">2</td>
-                                <td class="py-md px-md text-right text-error font-semibold">R$ 20,00</td>
-                            </tr>
                             <tr class="border-b border-surface-border hover:bg-surface-container-lowest transition-colors bg-surface-background">
                                 <td colspan="7" class="py-lg text-center text-secondary font-medium font-body-md">
-                                    Nenhum arquivo enviado. Faça o upload do arquivo emprestimos.csv acima para começar.
+                                    Nenhum resultado processado. Faça o upload dos arquivos CSV acima para começar.
                                 </td>
                             </tr>
                         <% } %>
@@ -361,7 +327,11 @@
     <footer class="bg-surface-container-lowest text-primary font-label-md h-12 fixed bottom-0 right-0 left-[260px] border-t border-surface-border flex items-center justify-between px-xl z-10">
         <span class="font-label-md text-label-md text-on-surface-variant cursor-default">© 2026 BiblioTech Data Systems</span>
         <div class="flex gap-lg">
-            <a class="text-on-secondary-container hover:underline hover:text-primary cursor-default" href="exportar">Exportar CSV</a>
+            <% if (request.getAttribute("processado") != null) { %>
+                <a class="text-on-secondary-container hover:underline hover:text-primary" href="exportar">Exportar CSV</a>
+            <% } else { %>
+                <span class="text-secondary/50 cursor-not-allowed">Exportar CSV</span>
+            <% } %>
         </div>
     </footer>
 
