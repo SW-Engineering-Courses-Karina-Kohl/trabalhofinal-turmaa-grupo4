@@ -17,9 +17,17 @@ public class ProcessadorBiblioteca {
     private final ExportadorResultados exportador;
 
     public ProcessadorBiblioteca() {
-        this.leitor = new LeitorEmprestimosCSV();
-        this.config = new ConfiguracaoMultas();
-        this.exportador = new ExportadorCSV();
+        this(new LeitorEmprestimosCSV(), new ConfiguracaoMultas(), new ExportadorCSV());
+    }
+
+    // permite que funcione ao passar outras implementacoes de leitura/exportacao, principalmente para testar que funciona com outras implementacoes
+    public ProcessadorBiblioteca(
+            LeitorEmprestimos leitor,
+            ConfiguracaoMultas config,
+            ExportadorResultados exportador) {
+        this.leitor = leitor;
+        this.config = config;
+        this.exportador = exportador;
     }
 
     public void carregarConfiguracao(String caminhoConfig) {

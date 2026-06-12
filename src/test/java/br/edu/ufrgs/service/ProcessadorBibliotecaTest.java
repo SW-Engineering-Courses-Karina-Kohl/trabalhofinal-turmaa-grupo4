@@ -2,12 +2,17 @@ package br.edu.ufrgs.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import br.edu.ufrgs.io.ExportadorResultados;
+import br.edu.ufrgs.io.LeitorEmprestimos;
+import br.edu.ufrgs.model.ConfiguracaoMultas;
 import br.edu.ufrgs.model.Emprestimo;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,6 +69,39 @@ public class ProcessadorBibliotecaTest {
         assertEquals(6.00, emprestimoProcessado.getValorMulta()); // 3 dias * R$ 2.00
     }
 
+    // valida se o processador consegue trabalhar com implementacoes injetadas pelas interfaces
+    @Test
+    public void deveProcessarEmprestimosUsandoLeitorInjetado() throws IOException {
+        Path arquivoConfig = pastaTemporaria.resolve("config.csv");
+        String conteudoConfig =
+            "categoria,valor_diario\n" +
+            "Academico,3.50\n" +
+            "Raro,8.00";
+
+        Files.write(arquivoConfig, conteudoConfig.getBytes(StandardCharsets.UTF_8));
+
+        LeitorFalso leitorFalso = new LeitorFalso();
+
+        ProcessadorBiblioteca processadorComInjecao = new ProcessadorBiblioteca(
+            leitorFalso,
+            new ConfiguracaoMultas(),
+            new ExportadorFalso()
+        );
+
+        processadorComInjecao.carregarConfiguracao(arquivoConfig.toString());
+
+        List<Emprestimo> resultado = processadorComInjecao.processar("arquivo-nao-usado.csv");
+
+        assertTrue(leitorFalso.foiChamado);
+        assertEquals(2, resultado.size());
+
+        assertEquals(10.50, resultado.get(0).getValorMulta(), 0.001);
+        assertEquals(16.00, resultado.get(1).getValorMulta(), 0.001);
+
+        assertEquals(2, processadorComInjecao.contarAtrasados(resultado));
+        assertEquals(26.50, processadorComInjecao.somarMultas(resultado), 0.001);
+    }
+
     // --- TESTES DE CONTABILIZAÇÃO E SOMA MÁTEMÁTICA ---
 
     // Valida se o contador ignora livros no prazo e incrementa apenas os atrasados
@@ -99,5 +137,48 @@ public class ProcessadorBibliotecaTest {
         double totalMultas = processador.somarMultas(lista);
 
         assertEquals(15.75, totalMultas);
+    }
+
+    // leitor falso usado para testar o processador sem depender de um arquivo csv de emprestimos
+    private static class LeitorFalso implements LeitorEmprestimos {
+        private boolean foiChamado = false;
+
+        @Override
+        public List<Emprestimo> ler(String caminhoArquivo) {
+            foiChamado = true;
+
+            List<Emprestimo> emprestimos = new ArrayList<>();
+
+            emprestimos.add(new Emprestimo(
+                10,
+                "Estruturas de Dados",
+                "Academico",
+                LocalDate.parse("2026-04-10"),
+                LocalDate.parse("2026-04-13")
+            ));
+
+            emprestimos.add(new Emprestimo(
+                12,
+                "Colecao Especial",
+                "Raro",
+                LocalDate.parse("2026-04-01"),
+                LocalDate.parse("2026-04-03")
+            ));
+
+            return emprestimos;
+        }
+    }
+
+    // exportador falso usado apenas para criar o processador no teste
+    private static class ExportadorFalso implements ExportadorResultados {
+        @Override
+        public void exportar(String caminhoArquivo, List<Emprestimo> emprestimos) {
+            // nao precisa fazer nada neste teste
+        }
+
+        @Override
+        public void exportarParaResposta(PrintWriter writer, List<Emprestimo> emprestimos) {
+            // nao precisa fazer nada neste teste
+        }
     }
 }
