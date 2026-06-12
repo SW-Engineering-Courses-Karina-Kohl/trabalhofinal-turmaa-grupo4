@@ -1,5 +1,12 @@
 package br.edu.ufrgs.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+
 import br.edu.ufrgs.model.Emprestimo;
 import br.edu.ufrgs.service.ProcessadorBiblioteca;
 import jakarta.servlet.ServletException;
@@ -9,14 +16,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
 
 // servlet principal da aplicacao
 // recebe os arquivos enviados, chama o processamento e encaminha o resultado para a jsp
@@ -50,6 +49,13 @@ public class SmartLibraryServlet extends HttpServlet {
                     "O arquivo de configuração de taxas (config_biblioteca.csv) é obrigatório."
                 );
             }
+            
+            // o arquivo de emprestimos tambem e obrigatorio para o processamento
+            if (fileEmprestimos == null || fileEmprestimos.getSize() == 0) {
+                throw new IllegalArgumentException(
+                    "O arquivo de empréstimos (emprestimos.csv) é obrigatório."
+                );
+            }
 
             // cria o processador responsavel por coordenar a leitura e o calculo
             ProcessadorBiblioteca processador = new ProcessadorBiblioteca();
@@ -63,14 +69,13 @@ public class SmartLibraryServlet extends HttpServlet {
             }
 
             // processa os emprestimos enviados no csv principal
-            List<Emprestimo> emprestimos = new ArrayList<>();
-            if (fileEmprestimos != null && fileEmprestimos.getSize() > 0) {
-                Path tempEmprestimos = salvarArquivoTemporario(fileEmprestimos, "emprestimos-");
-                try {
-                    emprestimos = processador.processar(tempEmprestimos.toAbsolutePath().toString());
-                } finally {
-                    Files.deleteIfExists(tempEmprestimos);
-                }
+            List<Emprestimo> emprestimos;
+            Path tempEmprestimos = salvarArquivoTemporario(fileEmprestimos, "emprestimos-");
+
+            try {
+                emprestimos = processador.processar(tempEmprestimos.toAbsolutePath().toString());
+            } finally {
+                Files.deleteIfExists(tempEmprestimos);
             }
 
             // pega os totais a partir do processador
