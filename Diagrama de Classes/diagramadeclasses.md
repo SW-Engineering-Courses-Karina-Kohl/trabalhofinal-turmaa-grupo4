@@ -1,0 +1,10 @@
+## Informações do trabalho
+
+Desenvolvimento de Software - INF01120
+
+Grupo 4 - Felipe Molski, Gabriel Santini, Gustavo Oliveira, Roberto Orlandini e Thiago Miranda
+
+Professora Karina Kohl
+
+## Serviço de Biblioteca - explicação do Diagrama de Classes
+A aplicação funciona como um sistema de controle de devoluções de uma biblioteca. Ela lê um arquivo `.csv` contendo registros de empréstimos de livros, analisa as datas previstas e reais de devolução e calcula automaticamente os dias de atraso. Com base nisso, o sistema aplica multas diferentes dependendo da categoria do livro, como comum, acadêmico ou raro, utilizando valores configurados em um arquivo externo. O diagrama é dividido em quatro pacotes. No pacote `controller`, a classe `SmartLibraryServlet` é responsável por receber as requisições da aplicação, processar os arquivos enviados e disponibilizar os resultados ao usuário. No pacote `service`, a classe `ProcessadorBiblioteca` coordena o fluxo principal do sistema, utilizando `LeitorEmprestimos`, `CalculadoraMultas`, `ConfiguracaoMultas` e `ExportadorResultados` para processar e exportar os dados dos empréstimos. A `CalculadoraMultas`, por sua vez, depende da classe `ConfiguracaoMultas`, localizada no pacote `model`, que armazena os valores de multa por categoria. Ainda no pacote `model`, a classe `Emprestimo` representa cada empréstimo processado, contendo seus dados, os dias de atraso e o valor da multa calculada. No pacote `io`, a interface `LeitorEmprestimos` define o contrato para leitura de empréstimos, sendo implementada pela classe `LeitorEmprestimosCSV`, enquanto a interface `ExportadorResultados` define as operações de exportação, implementadas pela classe `ExportadorCSV`. Dessa forma, `SmartLibraryServlet` interage com `ProcessadorBiblioteca`, que centraliza o processamento dos objetos `Emprestimo`, resultando em uma arquitetura organizada por responsabilidades e com baixo acoplamento entre os componentes. Algumas dependências temporárias que já aparecem nas assinaturas dos métodos foram omitidas como setas para preservar a legibilidade do diagrama.
