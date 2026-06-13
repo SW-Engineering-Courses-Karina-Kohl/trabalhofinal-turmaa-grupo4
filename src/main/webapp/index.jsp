@@ -289,7 +289,7 @@
                                     String multaColor = e.getValorMulta() > 0 ? "text-error font-semibold" : "text-status-success";
                         %>
                                     <tr class="border-b border-surface-border hover:bg-surface-container-lowest transition-colors <%= rowBg %>">
-                                        <td class="py-md px-md"><%= String.format("%03d", e.getId()) %></td>
+                                        <td class="py-md px-md"><%= String.format("%02d", e.getId()) %></td>
                                         <td class="py-md px-md font-medium text-primary"><%= e.getTitulo() %></td>
                                         <td class="py-md px-md">
                                             <span class="inline-flex items-center px-2 py-1 rounded <%= badgeClass %> text-[10px] uppercase font-bold tracking-wider">
